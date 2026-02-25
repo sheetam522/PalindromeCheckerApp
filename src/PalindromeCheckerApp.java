@@ -1,97 +1,72 @@
-import java.util.*;
+import java.util.Stack;
+import java.util.Scanner;
 
-// Strategy Interface
-interface PalindromeStrategy {
-    boolean checkPalindrome(String input);
-}
+public class PalindromeCheckerApp {
 
-// Stack Strategy
-class StackStrategy implements PalindromeStrategy {
+    // Two Pointer Method
+    public static boolean twoPointerCheck(String str) {
+        int start = 0;
+        int end = str.length() - 1;
 
-    public boolean checkPalindrome(String input) {
+        while (start < end) {
+            if (str.charAt(start) != str.charAt(end)) {
+                return false;
+            }
+            start++;
+            end--;
+        }
+        return true;
+    }
 
-        String normalized = input.toLowerCase();
+    // Stack Method
+    public static boolean stackCheck(String str) {
         Stack<Character> stack = new Stack<>();
 
-        for (char ch : normalized.toCharArray()) {
+        for (char ch : str.toCharArray()) {
             stack.push(ch);
         }
 
-        for (char ch : normalized.toCharArray()) {
+        for (char ch : str.toCharArray()) {
             if (ch != stack.pop()) {
                 return false;
             }
         }
-
         return true;
     }
-}
 
-// Deque Strategy
-class DequeStrategy implements PalindromeStrategy {
-
-    public boolean checkPalindrome(String input) {
-
-        String normalized = input.toLowerCase();
-        Deque<Character> deque = new LinkedList<>();
-
-        for (char ch : normalized.toCharArray()) {
-            deque.addLast(ch);
-        }
-
-        while (deque.size() > 1) {
-            if (deque.removeFirst() != deque.removeLast()) {
-                return false;
-            }
-        }
-
-        return true;
+    // Recursive Method
+    public static boolean recursiveCheck(String str, int start, int end) {
+        if (start >= end) return true;
+        if (str.charAt(start) != str.charAt(end)) return false;
+        return recursiveCheck(str, start + 1, end - 1);
     }
-}
-
-// Context Class
-class PalindromeContext {
-
-    private PalindromeStrategy strategy;
-
-    public PalindromeContext(PalindromeStrategy strategy) {
-        this.strategy = strategy;
-    }
-
-    public boolean execute(String input) {
-        return strategy.checkPalindrome(input);
-    }
-}
-
-// Main Class
-public class PalindromeCheckerApp {
 
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
 
         System.out.println("Enter a string to check palindrome:");
-        String input = sc.nextLine();
+        String input = sc.nextLine().toLowerCase();
 
-        System.out.println("Choose Strategy: 1 - Stack, 2 - Deque");
-        int choice = sc.nextInt();
+        // Two Pointer Timing
+        long start1 = System.nanoTime();
+        boolean result1 = twoPointerCheck(input);
+        long end1 = System.nanoTime();
 
-        PalindromeStrategy strategy;
+        // Stack Timing
+        long start2 = System.nanoTime();
+        boolean result2 = stackCheck(input);
+        long end2 = System.nanoTime();
 
-        if (choice == 1) {
-            strategy = new StackStrategy();
-        } else {
-            strategy = new DequeStrategy();
-        }
+        // Recursive Timing
+        long start3 = System.nanoTime();
+        boolean result3 = recursiveCheck(input, 0, input.length() - 1);
+        long end3 = System.nanoTime();
 
-        PalindromeContext context = new PalindromeContext(strategy);
-        boolean result = context.execute(input);
-
-        if (result) {
-            System.out.println("The given string is a Palindrome.");
-        } else {
-            System.out.println("The given string is NOT a Palindrome.");
-        }
+        System.out.println("\nResults:");
+        System.out.println("Two Pointer: " + result1 + " | Time: " + (end1 - start1) + " ns");
+        System.out.println("Stack: " + result2 + " | Time: " + (end2 - start2) + " ns");
+        System.out.println("Recursive: " + result3 + " | Time: " + (end3 - start3) + " ns");
 
         sc.close();
     }
