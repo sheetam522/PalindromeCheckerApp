@@ -1,29 +1,36 @@
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
+import java.util.Scanner;
 
-public class PalindromeCheckerApp {
+public class UseCase6PalindromeCheckerApp {
 
     public static void main(String[] args) {
 
-        System.out.println("========================================");
-        System.out.println("        PALINDROME CHECKER APP          ");
-        System.out.println("========================================");
+        Scanner scanner = new Scanner(System.in);
 
-        // Original string
-        String original = "racecar";
+        System.out.println("Enter a string to check palindrome:");
+        String input = scanner.nextLine();
 
-        // Create Stack
+        // Convert to lowercase for case-insensitive comparison
+        input = input.toLowerCase();
+
+        // Create Queue and Stack
+        Queue<Character> queue = new LinkedList<>();
         Stack<Character> stack = new Stack<>();
 
-        // Push characters into stack
-        for (int i = 0; i < original.length(); i++) {
-            stack.push(original.charAt(i));
+        // Enqueue and Push characters
+        for (int i = 0; i < input.length(); i++) {
+            char ch = input.charAt(i);
+            queue.add(ch);   // Enqueue
+            stack.push(ch);  // Push
         }
 
         boolean isPalindrome = true;
 
-        // Pop characters and compare
-        for (int i = 0; i < original.length(); i++) {
-            if (original.charAt(i) != stack.pop()) {
+        // Compare dequeue and pop
+        while (!queue.isEmpty()) {
+            if (queue.remove() != stack.pop()) {
                 isPalindrome = false;
                 break;
             }
@@ -31,12 +38,11 @@ public class PalindromeCheckerApp {
 
         // Print result
         if (isPalindrome) {
-            System.out.println("The string \"" + original + "\" is a Palindrome.");
+            System.out.println("The given string is a Palindrome.");
         } else {
-            System.out.println("The string \"" + original + "\" is NOT a Palindrome.");
+            System.out.println("The given string is NOT a Palindrome.");
         }
 
-        System.out.println("========================================");
-        System.out.println("Application execution completed.");
+        scanner.close();
     }
 }
